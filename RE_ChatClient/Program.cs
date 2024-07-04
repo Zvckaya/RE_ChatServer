@@ -10,7 +10,7 @@ namespace client
     {
         public override void OnConnected(EndPoint endpoint)
         {
-            Console.WriteLine (endpoint.ToString());
+            Console.WriteLine ($"{SessionId}님 어서오세요");
         }
 
         public override void OnRecv(ArraySegment<byte> buffer)
@@ -32,7 +32,8 @@ namespace client
             IPAddress ipAddr = ipHost.AddressList[0];
             IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
-            Connector connector = new Connector();
+            Room chatRoom = new Room();
+            Connector connector = new Connector(chatRoom);
 
             connector.Connect(endPoint, () => { return new ClientSession(); });
 

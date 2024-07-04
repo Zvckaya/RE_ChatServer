@@ -21,10 +21,14 @@ namespace Core
         public abstract void OnRecv(ArraySegment<byte> buffer);
         public abstract void OnSend(ArraySegment<byte> buffer);
 
+        public int SessionId { get; private set; }
+        public Room _room { get; private set; }
 
-        internal void Start(Socket socket)
+        internal void Start(Socket socket,int sessionId, Room room)
         {
             _socket = socket;
+            SessionId = sessionId;
+            _room = room;
 
             _recvArgs = new SocketAsyncEventArgs();
             _recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnRecvCompleted);
@@ -33,7 +37,8 @@ namespace Core
             _sendArgs = new SocketAsyncEventArgs();
             _sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
 
-            OnConnected(socket.RemoteEndPoint);
+            room.Enter(this);
+
             RegisterRecv();
 
         }
@@ -42,6 +47,8 @@ namespace Core
         {
             if (Interlocked.Exchange(ref _disconnect, 1) == 1)
                 return;
+
+            _room.Leave(this);
 
             _socket.Shutdown(SocketShutdown.Both);
             _socket.Close();

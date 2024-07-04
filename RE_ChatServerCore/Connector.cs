@@ -12,7 +12,14 @@ namespace Core
     {
 
         Func<Session> _sessionFac;
+        private int _sessionIdCounter = 0;
+        private object _lock = new object();
+        private Room _room;
 
+        public Connector(Room room)
+        {
+            _room = room;
+        }
 
         public void Connect(IPEndPoint endPoint , Func<Session> sessionFactorty)
         {
@@ -42,8 +49,14 @@ namespace Core
         {
             if (e.SocketError == SocketError.Success)
             {
+                int sessionId;
+                lock (_lock)
+                {
+                    sessionId = ++_sessionIdCounter;
+                }
+
                 Session session = _sessionFac.Invoke();
-                session.Start(e.ConnectSocket);
+                session.Start(e.ConnectSocket,sessionId);
                 session.OnConnected(e.RemoteEndPoint);
             }
         }

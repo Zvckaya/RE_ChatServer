@@ -18,6 +18,8 @@ namespace Core
         {
             string message = Encoding.UTF8.GetString(buffer.Array,buffer.Offset,buffer.Count);
             Console.WriteLine($"[받음]:{message}");
+
+            _room.Broadcast(message);
         }
 
         public override void OnSend(ArraySegment<byte> buffer)
