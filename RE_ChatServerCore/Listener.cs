@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RE_ChatServerCore
+namespace Core
 {
     public class Listener
     {
@@ -27,7 +27,26 @@ namespace RE_ChatServerCore
 
         private void RegisterAccept()
         {
-            
+            SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+            args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
+            bool pending = _listenSocket.AcceptAsync(args);
+            if (!pending)
+                OnAcceptCompleted(null, args);
+        }
+
+        private void OnAcceptCompleted(object sender, SocketAsyncEventArgs e)
+        {
+            if(e.SocketError == SocketError.Success)
+            {
+                Session session = _sessonFactory.Invoke();
+                session.Start();
+            }
+            else
+            {
+                Console.WriteLine("Failed to accept client ");
+            }
+
+            RegisterAccept();
         }
     }
 }
