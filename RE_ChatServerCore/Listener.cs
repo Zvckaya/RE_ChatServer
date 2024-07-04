@@ -39,7 +39,7 @@ namespace Core
             if(e.SocketError == SocketError.Success)
             {
                 Session session = _sessonFactory.Invoke();
-                session.Start();
+                session.Start(e.AcceptSocket);
             }
             else
             {
