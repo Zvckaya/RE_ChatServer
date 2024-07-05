@@ -29,8 +29,7 @@
 가장 기초적으로 세션들을 감시할 리스너를 구동하고 있어야 한다 .
 
 또한 이 리스너는 서버에서 사용할 세션클래스로 매핑되어 있어야함 
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/d74a27e5-3e7c-426b-98d8-29ac71898b73/0e39d2e1-fbd8-4eba-9792-60dd170987b9/Untitled.png)
+![img](https://prod-files-secure.s3.us-west-2.amazonaws.com/d74a27e5-3e7c-426b-98d8-29ac71898b73/0e39d2e1-fbd8-4eba-9792-60dd170987b9/Untitled.png)
 
 리스너생성 및 서버에서 사용할 세션 타입을 Func을 이용하여 넘기고 있다 .
 
