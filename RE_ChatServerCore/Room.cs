@@ -29,6 +29,7 @@ namespace Core
 
         public void Broadcast(string message)
         {
+
             byte[] sendbuff = Encoding.UTF8.GetBytes(message);
             lock (_lock)
             {

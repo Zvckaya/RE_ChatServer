@@ -14,7 +14,7 @@ namespace ChatServer
             IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
             listener.Init(endPoint, () => new ChatSession());
 
-            Console.WriteLine("Listening....");
+            Console.WriteLine("서버시작....");
             while (true)
             {
 

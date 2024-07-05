@@ -9,9 +9,16 @@ namespace Core
 {
     public class ChatSession : Session
     {
-        public override void OnConnected(EndPoint endpoint)
+        public override void OnConnected(EndPoint endpoint )
         {
-            Console.WriteLine("서버에 접속했습니다.");
+            byte[] sendbuff = Encoding.UTF8.GetBytes($"{SessionId}님 어서오세요 ");
+            Send(sendbuff);
+        }
+
+        public override void OnDisconnected(EndPoint endpoint)
+        {
+            Console.WriteLine("서버에서 퇴장하셨습니다.");
+
         }
 
         public override void OnRecv(ArraySegment<byte> buffer)
@@ -19,7 +26,7 @@ namespace Core
             string message = Encoding.UTF8.GetString(buffer.Array,buffer.Offset,buffer.Count);
             Console.WriteLine($"[받음]:{message}");
 
-            _room.Broadcast(message);
+            
         }
 
         public override void OnSend(ArraySegment<byte> buffer)

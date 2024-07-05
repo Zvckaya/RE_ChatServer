@@ -12,6 +12,9 @@ namespace Core
     {
         Socket _listenSocket;
         Func<Session> _sessonFactory;
+        private int _sessionIdCounter = 0;
+        private object _lock = new object();
+        private Room _room;
 
         public void Init(IPEndPoint endPoint,Func<Session> sessonFactory)
         {
@@ -21,14 +24,17 @@ namespace Core
             _listenSocket.Bind(endPoint);
             _listenSocket.Listen(10);
 
-            RegisterAccept();
+            SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+            args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
+
+            RegisterAccept(args);
 
         }
 
-        private void RegisterAccept()
+        private void RegisterAccept(SocketAsyncEventArgs args)
         {
-            SocketAsyncEventArgs args = new SocketAsyncEventArgs();
-            args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
+            args.AcceptSocket = null;
+           
             bool pending = _listenSocket.AcceptAsync(args);
             if (!pending)
                 OnAcceptCompleted(null, args);
@@ -38,15 +44,20 @@ namespace Core
         {
             if(e.SocketError == SocketError.Success)
             {
+                int sessionId;
+                lock (_lock)
+                {
+                    sessionId = ++_sessionIdCounter;
+                }
                 Session session = _sessonFactory.Invoke();
-                session.Start(e.AcceptSocket,session.SessionId,session._room);
+                session.Start(e.AcceptSocket);
             }
             else
             {
                 Console.WriteLine("Failed to accept client ");
             }
 
-            RegisterAccept();
+            RegisterAccept(e);
         }
     }
 }

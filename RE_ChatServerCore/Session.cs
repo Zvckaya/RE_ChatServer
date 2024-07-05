@@ -20,35 +20,38 @@ namespace Core
         public abstract void OnConnected(EndPoint endpoint);
         public abstract void OnRecv(ArraySegment<byte> buffer);
         public abstract void OnSend(ArraySegment<byte> buffer);
+        public abstract void OnDisconnected(EndPoint endpoint);
 
         public int SessionId { get; private set; }
-        public Room _room { get; private set; }
 
-        public void Start(Socket socket,int sessionId, Room room)
+        public void Start(Socket socket)
         {
             _socket = socket;
-            SessionId = sessionId;
-            _room = room;
+        
 
             _recvArgs = new SocketAsyncEventArgs();
             _recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnRecvCompleted);
             _recvArgs.SetBuffer(new byte[1024], 0, 1024);
+            SessionId = GenerateSessionId();
 
             _sendArgs = new SocketAsyncEventArgs();
             _sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
-
-            room.Enter(this);
+            OnConnected(_socket.RemoteEndPoint);
 
             RegisterRecv();
 
+        }
+
+        private int GenerateSessionId()
+        {
+            return new Random().Next(1000, 9999);
         }
 
         public void Disconnect()
         {
             if (Interlocked.Exchange(ref _disconnect, 1) == 1)
                 return;
-
-            _room.Leave(this);
+            OnDisconnected(_recvArgs.RemoteEndPoint);
 
             _socket.Shutdown(SocketShutdown.Both);
             _socket.Close();
@@ -98,7 +101,6 @@ namespace Core
             if (e.SocketError == SocketError.Success)
             {
                 OnSend(new ArraySegment<byte>(e.Buffer, e.Offset, e.Count));
-
             }
             else
             {
