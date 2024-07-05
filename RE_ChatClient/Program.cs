@@ -11,8 +11,7 @@ namespace client
     {
         public override void OnConnected(EndPoint endpoint)
         {
-            byte[] sendbuff = Encoding.UTF8.GetBytes($"{SessionId}님이 접속했습니다. ");
-            Send(sendbuff);
+            Console.WriteLine("접속");
         }
 
         public override void OnDisconnected(EndPoint endpoint)
@@ -42,8 +41,8 @@ namespace client
 
 
             Connector connector = new Connector();
-
             connector.Connect(endPoint, () => { return new ClientSession(); });
+
 
             while (true)
             {

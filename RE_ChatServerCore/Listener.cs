@@ -51,6 +51,7 @@ namespace Core
                 }
                 Session session = _sessonFactory.Invoke();
                 session.Start(e.AcceptSocket);
+                Room.instance.Enter(session);
             }
             else
             {

@@ -17,7 +17,7 @@ namespace Core
 
         public override void OnDisconnected(EndPoint endpoint)
         {
-            Console.WriteLine("서버에서 퇴장하셨습니다.");
+            Console.WriteLine($"{SessionId}님이 퇴장했습니다 ");
 
         }
 

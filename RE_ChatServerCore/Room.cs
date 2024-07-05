@@ -8,6 +8,19 @@ namespace Core
 {
     public class Room
     {
+        private static Room roomMaster;
+        public static Room instance
+        {
+            get
+            {
+                if (roomMaster == null)
+                {
+                    roomMaster = new Room();
+                }
+                return roomMaster;
+            }
+        }
+
         public List<Session> _session = new List<Session>();
         private object _lock = new object();
 
@@ -16,6 +29,7 @@ namespace Core
             lock (_lock)
             {
                 _session.Add(sesssion);
+                Console.WriteLine($"{sesssion.SessionId} 가 룸에 추가됨 ");
             }
         }
 
