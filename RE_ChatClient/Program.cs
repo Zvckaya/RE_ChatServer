@@ -28,6 +28,13 @@ namespace client
 
         }
 
+        public void SendMessage(string message)
+        {
+            byte[] sendBuff = Encoding.UTF8.GetBytes(message);
+            Send(new ArraySegment<byte>(sendBuff,0, sendBuff.Length));
+            
+        }
+
     }
 
     class Client
@@ -39,18 +46,22 @@ namespace client
             IPAddress ipAddr = ipHost.AddressList[0];
             IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
+            ClientSession session = new ClientSession();
+            
 
             Connector connector = new Connector();
-            connector.Connect(endPoint, () => { return new ClientSession(); });
-
+            connector.Connect(endPoint, () => {
+                session = new ClientSession();
+                return session;
+            });
+            
 
             while (true)
             {
-
+                string input = Console.ReadLine();
+                session.SendMessage(input);
+                
             }
-            
-
-
         }
     }
 }

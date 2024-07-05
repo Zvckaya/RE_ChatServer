@@ -85,7 +85,8 @@ namespace Core
                     ArraySegment<byte> buff = new ArraySegment<byte>(e.Buffer, e.Offset, e.Count);
                     OnRecv(buff);
                     RegisterRecv();
-                } catch (Exception ex)
+                } 
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }
