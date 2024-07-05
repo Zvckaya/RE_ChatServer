@@ -52,6 +52,7 @@ namespace Core
             if (Interlocked.Exchange(ref _disconnect, 1) == 1)
                 return;
             OnDisconnected(_recvArgs.RemoteEndPoint);
+            Room.instance.Leave(this);
 
             _socket.Shutdown(SocketShutdown.Both);
             _socket.Close();
@@ -101,7 +102,8 @@ namespace Core
         {
             if (e.SocketError == SocketError.Success)
             {
-                OnSend(new ArraySegment<byte>(e.Buffer, e.Offset, e.Count));
+                ArraySegment<byte> bytes = new ArraySegment<byte>(e.Buffer, e.Offset, e.Count);
+                OnSend(bytes);
             }
             else
             {
