@@ -56,7 +56,7 @@ namespace Core
                 }
 
                 Session session = _sessionFac.Invoke();
-                session.Start(e.ConnectSocket,sessionId);
+                session.Start(e.ConnectSocket,sessionId,_room);
                 session.OnConnected(e.RemoteEndPoint);
             }
         }

@@ -24,7 +24,7 @@ namespace Core
         public int SessionId { get; private set; }
         public Room _room { get; private set; }
 
-        internal void Start(Socket socket,int sessionId, Room room)
+        public void Start(Socket socket,int sessionId, Room room)
         {
             _socket = socket;
             SessionId = sessionId;
